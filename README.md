@@ -218,11 +218,11 @@ This describes how to set up a mobile PaxCounter:<br> Follow all steps so far fo
 
 # SD-card
 
-Data can be stored on an SD-card if one is availabe. Simply choose the file in src/hal and add the following lines to your hal-file:
+Data can be stored on SD-card if the board provides an SD card interface, either with SPI or MMC mode. To enable this feature, specify interface mode and hardware pins in board's hal file (src/hal/<board.h>):
 
-    #define HAS_SDCARD 1     // SD-card-reader/writer, using SPI interface
+    #define HAS_SDCARD 1     // SD-card interface, using SPI mode
 	OR
-	#define HAS_SDCARD 2     // SD-card-reader/writer, using SDMMC interface
+	#define HAS_SDCARD 2     // SD-card interface, using MMC mode
 
     // Pins for SPI interface
     #define SDCARD_CS   (13) // fill in the correct numbers for your board
@@ -230,32 +230,24 @@ Data can be stored on an SD-card if one is availabe. Simply choose the file in s
     #define SDCARD_MISO (2)
     #define SDCARD_SCLK (14)
 
-Please choose the correct number for the connection of the reader/writer.
-
-This is an example of a board with SD-card: https://www.aliexpress.com/item/32990008126.html
-In this case you take the file src/hal/ttgov21new.h and add the lines given above (numbers given are for this board).
+This is an example of a board with MMC SD-card interface: https://www.aliexpress.com/item/32915894264.html. For this board use file src/hal/ttgov21new.h and add the lines given above.
 
 Another approach would be this tiny board: https://www.aliexpress.com/item/32424558182.html (needs 5V).
-In this case you choose the correct file for your ESP32-board in the src/hal-directory and add the lines given above to the correct h-file. Please correct the numbers given in the example to the numbers used corresponding to your wiring.
+In this case you choose the correct file for your ESP32-board in the src/hal-directory and add the lines given above. Edit the pin numbers given in the example, according to your wiring.
 
-Some hints:
-These cheap devices often handle SD-cards up to 32GB, not bigger ones. They can handle files in the old DOS-way, to say the filenames are in the 8.3-format. And they often cannot handle subdirectories.
+Data is written on SD-card to a single file. After 3 write operations the data is flushed to the disk to minimize flash write cycles. Thus, up to the last 3 records of data will get lost when the PAXCOUNTER looses power during operation.
 
-The software included here writes data in a file named PAXCOUNT.xx, where xx can range from 00 to 99. The software starts with 00, checks to see if such a file already exists and if yes it will continue with the next number (up to 99 - in this case it will return no sd-card). So an existing file will not be overwritten.
+Format of the resulting file is CSV, thus easy import in LibreOffice, Excel, Influx, etc. Each record contains timestamp (in ISO8601 format), paxcount (wifi and ble) and battery voltage (optional). Voltage is logged if the device has a battery voltage sensor (to be configured in board hal file).
 
-The data is written to the card and after 3 write-operations the data is flushed to the disk. Thus, up to the last 3 records of data will get lost when the PAXCOUNTER looses power.
-
-And finally: this is the data written to the disk:
+File contents example:
 
 	timestamp,wifi,ble[,voltage]
-	2022-01-28T19:36:35Z,17,48
-	2022-01-28T19:37:35Z,21,52
-	2022-01-28T19:38:35Z,14,49
+	2022-01-30T21:12:41Z,11,25[,4100]
+	2022-01-30T21:14:24Z,10,21[,4070]
+	2022-01-30T21:16:08Z,12,26[,4102]
+	2022-01-30T21:17:52Z,11,26[,4076]
 	
-Format of the data is CSV, timestamp is ISO8601, which can easily imported into LibreOffice, Excel, Influx, etc.
-Voltage is logged, if the device has a battery voltage sensor (to be configure in board hal file).
-
-If you want to change this please look into src/sdcard.cpp and include/sdcard.h.
+If you want to change this, modify src/sdcard.cpp and include/sdcard.h.
 
 # Integration into "The Things Stack Community Edition" aka "The Things Stack V3"
 
