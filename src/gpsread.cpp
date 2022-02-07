@@ -167,7 +167,7 @@ void gps_loop(void *pvParameters) {
     } // if
 
     // show NMEA data in verbose mode, useful only for debugging GPS, very
-    // noisy ESP_LOGV(TAG, "GPS NMEA data: passed %u / failed: %u / with fix:
+    // ESP_LOGV(TAG, "GPS NMEA data: passed %u / failed: %u / with fix:
     // %u",
     //         gps.passedChecksum(), gps.failedChecksum(),
     //         gps.sentencesWithFix());

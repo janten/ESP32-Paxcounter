@@ -20,7 +20,7 @@ User, long press    -> send a button message
 Reset -> reset device
 */
 
-#define HAS_DISPLAY 1
+// #define HAS_DISPLAY 1
 #define MY_DISPLAY_SDA SDA
 #define MY_DISPLAY_SCL SCL
 #define MY_DISPLAY_RST NOT_A_PIN
@@ -45,7 +45,7 @@ Reset -> reset device
 // blue onboard led settings
 // possible values: 
 // AXP20X_LED_OFF / AXP20X_LED_LOW_LEVEL (means LED ON) / AXP20X_LED_BLINK_1HZ / AXP20X_LED_BLINK_4HZ
-#define PMU_LED_RUN_MODE AXP20X_LED_LOW_LEVEL 
+#define PMU_LED_RUN_MODE AXP20X_LED_OFF 
 #define PMU_LED_SLEEP_MODE AXP20X_LED_OFF
 
 // GPS settings
